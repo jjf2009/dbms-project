@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block crumb %}Reports{% endblock %}
+{% block body %}
+<h1>Summary Report</h1>
+<p class="sub">Alerts and ingestion activity for a chosen period.</p>
+
+<form method="get" action="/siem/report" class="card toolbar">
+  <div><label>From</label><input name="ts_from" type="datetime-local" value="{{ ts_from }}"></div>
+  <div><label>To</label><input name="ts_to" type="datetime-local" value="{{ ts_to }}"></div>
+  <button type="submit">Run report</button>
+</form>
+
+<div class="grid cols" style="margin-top:4px">
+  <div class="card tile accent"><div class="label">Events ingested</div><div class="num">{{ "{:,}".format(report.ingest_total) }}</div></div>
+  <div class="card tile warn"><div class="label">IPs blocked</div><div class="num">{{ report.blocks }}</div></div>
+</div>
+
+<div class="grid two" style="margin-top:16px">
+  <div class="card pad0">
+    <div style="padding:14px 18px 0"><h3 style="margin:0">Alerts by severity</h3></div>
+    <table><thead><tr><th>Severity</th><th class="num">Count</th></tr></thead><tbody>
+      {% for r in report.alerts_by_sev %}<tr><td><span class="badge {{ r.severity }}">{{ r.severity }}</span></td><td class="num mono">{{ r.n }}</td></tr>
+      {% else %}<tr><td class="empty" colspan="2">none</td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+  <div class="card pad0">
+    <div style="padding:14px 18px 0"><h3 style="margin:0">Alerts by rule</h3></div>
+    <table><thead><tr><th>Rule</th><th class="num">Count</th></tr></thead><tbody>
+      {% for r in report.alerts_by_rule %}<tr><td>{{ r.rule_name }}</td><td class="num mono">{{ r.n }}</td></tr>
+      {% else %}<tr><td class="empty" colspan="2">none</td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+</div>
+{% endblock %}

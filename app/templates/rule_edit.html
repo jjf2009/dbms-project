@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Edit Rule{% endblock %}
+{% block crumb %}Detection Rules / Edit #{{ rule.rule_id }}{% endblock %}
+{% block body %}
+<p class="sub"><a href="/siem/rules">← Back to rules</a></p>
+<h1>Edit rule #{{ rule.rule_id }}</h1>
+<p class="sub">{{ rule.rule_name }}</p>
+
+<form method="post" action="/siem/rules/{{ rule.rule_id }}" class="card toolbar">
+  <div><label>Name</label><input name="rule_name" value="{{ rule.rule_name }}" required></div>
+  <div><label>Type</label>
+    <select name="rule_type">
+      <option value="threshold" {{ 'selected' if rule.rule_type=='threshold' }}>threshold</option>
+      <option value="pattern" {{ 'selected' if rule.rule_type=='pattern' }}>pattern</option>
+    </select></div>
+  <div><label>Event type</label><input name="event_type" value="{{ rule.event_type or '' }}"></div>
+  <div><label>Threshold</label><input name="threshold_count" type="number" value="{{ rule.threshold_count or '' }}"></div>
+  <div><label>Pattern (regex)</label><input name="pattern" value="{{ rule.pattern or '' }}"></div>
+  <div><label>Window (s)</label><input name="window_seconds" type="number" value="{{ rule.window_seconds }}"></div>
+  <div><label>Severity</label>
+    <select name="severity">
+      {% for s in ['low','medium','high'] %}<option {{ 'selected' if rule.severity==s }}>{{ s }}</option>{% endfor %}
+    </select></div>
+  <div><label>Enabled</label>
+    <select name="enabled">
+      <option value="on" {{ 'selected' if rule.enabled }}>enabled</option>
+      <option value="off" {{ 'selected' if not rule.enabled }}>disabled</option>
+    </select></div>
+  <button type="submit">Save changes</button>
+</form>
+{% endblock %}

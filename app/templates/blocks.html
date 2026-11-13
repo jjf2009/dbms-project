@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Blocked IPs{% endblock %}
+{% block crumb %}Blocked IPs{% endblock %}
+{% block body %}
+<h1>Blocked IPs</h1>
+<p class="sub">Active blocks cause the demo website to return HTTP 403 to that IP. Unblocking is independent of closing the alert.</p>
+<div class="card pad0">
+<table>
+  <thead><tr><th>IP</th><th>Alert</th><th>Blocked by</th><th>Blocked at</th><th>State</th><th></th></tr></thead>
+  <tbody>
+    {% for b in blocks %}
+    <tr>
+      <td class="mono">{{ b.ip_address }}</td>
+      <td><a href="/siem/alerts/{{ b.alert_id }}">#{{ b.alert_id }}</a></td>
+      <td>{{ b.blocked_by }}</td>
+      <td class="muted">{{ b.blocked_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{% if b.unblocked_at %}<span class="badge closed">unblocked</span>{% else %}<span class="badge active">active</span>{% endif %}</td>
+      <td>{% if not b.unblocked_at %}
+        <form class="inline" method="post" action="/siem/blocks/{{ b.block_id }}/unblock">
+          <button type="submit" class="sec sm">Unblock</button></form>{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td class="empty" colspan="6">No blocks yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

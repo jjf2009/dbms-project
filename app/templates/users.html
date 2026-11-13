@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Operators{% endblock %}
+{% block crumb %}Operators{% endblock %}
+{% block body %}
+<h1>Operator Accounts</h1>
+<p class="sub">SIEM operators and their roles. Admin ⊇ Analyst ⊇ Viewer. Passwords are stored hashed (bcrypt).</p>
+<div class="card pad0">
+<table>
+  <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Active</th><th></th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td class="mono">#{{ u.user_id }}</td><td>{{ u.username }}</td><td class="muted">{{ u.email }}</td>
+      <td><span class="badge gray">{{ u.role }}</span></td>
+      <td>{% if u.is_active %}<span class="badge low">active</span>{% else %}<span class="badge closed">inactive</span>{% endif %}</td>
+      <td>
+        <form class="inline" method="post" action="/siem/users/{{ u.user_id }}/active">
+          <input type="hidden" name="active" value="{{ 'off' if u.is_active else 'on' }}">
+          <button type="submit" class="sec sm">{{ 'Deactivate' if u.is_active else 'Activate' }}</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2>New operator</h2>
+<form method="post" action="/siem/users" class="card toolbar">
+  <div><label>Username</label><input name="username" required></div>
+  <div><label>Email</label><input name="email" type="email" required></div>
+  <div><label>Password</label><input name="password" type="password" required></div>
+  <div><label>Role</label><select name="role"><option>viewer</option><option>analyst</option><option>admin</option></select></div>
+  <button type="submit">Create operator</button>
+</form>
+{% endblock %}

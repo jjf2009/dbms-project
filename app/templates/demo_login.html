@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ 'Register' if mode == 'register' else 'Login' }} · Demo Shop</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth">
+    <h1>🛒 Demo Shop</h1>
+    <p class="sub">{{ 'Create an account' if mode == 'register' else 'Sign in' }}</p>
+    <div class="card">
+      {% if error %}<div class="err">{{ error }}</div>{% endif %}
+      <form method="post" action="/demo/{{ mode }}">
+        <div><label>Username</label><input name="username" autofocus></div>
+        <div><label>Password</label><input name="password" type="password"></div>
+        <button type="submit">{{ 'Create account' if mode == 'register' else 'Sign in' }}</button>
+      </form>
+      {% if mode == 'register' %}
+        <p class="muted" style="margin:12px 0 0">Have an account? <a href="/demo/login">Login</a></p>
+      {% else %}
+        <p class="muted" style="margin:12px 0 0">No account? <a href="/demo/register">Register</a> · demo: <code>alice / alice123</code></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

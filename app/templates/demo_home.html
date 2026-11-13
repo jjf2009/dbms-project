@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo Shop</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="topbar">
+  <span class="crumb">🛒 Demo Shop</span>
+  <span class="spacer"></span>
+  <span class="who">
+    {% if user %}<span class="pill">{{ user }}</span><a href="/demo/logout">Logout</a>
+    {% else %}<a href="/demo/login">Login</a> &nbsp;<a href="/demo/register">Register</a>{% endif %}
+    &nbsp;<a href="/siem/">SIEM →</a>
+  </span>
+</div>
+<main class="content" style="max-width:1100px;margin:0 auto">
+  <h1>Browse items</h1>
+  <p class="sub">Every request here is logged to the SIEM. Blocked IPs receive HTTP 403.</p>
+  <form method="get" action="/demo/" class="toolbar" style="margin-bottom:18px">
+    <div style="flex:1;min-width:240px"><input name="q" value="{{ q }}" placeholder="Search items…"></div>
+    <button type="submit">Search</button>
+  </form>
+  <div class="grid cols">
+    {% for it in items %}
+    <div class="card">
+      <strong>{{ it.name }}</strong>
+      <p class="muted" style="margin:6px 0 10px">{{ it.description }}</p>
+      <div class="tile"><div class="num" style="font-size:22px">${{ it.price }}</div></div>
+    </div>
+    {% else %}
+    <div class="card"><p class="empty">No items match “{{ q }}”.</p></div>
+    {% endfor %}
+  </div>
+</main>
+</body>
+</html>

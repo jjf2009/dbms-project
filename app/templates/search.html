@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Log Search{% endblock %}
+{% block crumb %}Log Search{% endblock %}
+{% block body %}
+<h1>Log Search</h1>
+<p class="sub">Search by IP, user, time, event type or payload text. Indexes keep this under 1 s on millions of rows — the plan below shows which index was used.</p>
+
+<form method="get" action="/siem/search" class="card toolbar">
+  <div><label>Source IP</label><input name="src_ip" value="{{ f.src_ip or '' }}" placeholder="10.0.0.5"></div>
+  <div><label>Username</label><input name="actor_username" value="{{ f.actor_username or '' }}"></div>
+  <div><label>Event type</label><input name="event_type" value="{{ f.event_type or '' }}" placeholder="login_failed"></div>
+  <div><label>Payload text</label><input name="text" value="{{ f.text or '' }}" placeholder="union select"></div>
+  <div><label>From</label><input name="ts_from" type="datetime-local" value="{{ f.ts_from or '' }}"></div>
+  <div><label>To</label><input name="ts_to" type="datetime-local" value="{{ f.ts_to or '' }}"></div>
+  <div><label>&nbsp;</label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" name="include_archived" style="width:auto" {% if include_archived %}checked{% endif %}> include archived</label></div>
+  <button type="submit">Search</button>
+</form>
+
+{% if result %}
+  <div class="actions"><span class="badge gray">{{ result.rows|length }} rows</span>
+    <span class="badge low">{{ result.elapsed_ms }} ms</span></div>
+  <div class="card pad0">
+  <table>
+    <thead><tr><th>Timestamp</th><th>Source IP</th><th>User</th><th>Event</th><th>Status</th><th>Payload</th></tr></thead>
+    <tbody>
+      {% for r in result.rows %}
+      <tr><td class="muted">{{ r.ts.strftime('%Y-%m-%d %H:%M:%S') }}</td><td class="mono">{{ r.src_ip }}</td>
+          <td>{{ r.actor_username or '—' }}</td><td>{{ r.event_type }}</td><td class="mono">{{ r.status or '' }}</td>
+          <td class="mono">{{ r.payload or '' }}</td></tr>
+      {% else %}
+      <tr><td class="empty" colspan="6">No matching logs.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <h2>Query plan <span class="muted">— proof the index was used (NFR2)</span></h2>
+  <pre>{{ result.plan }}</pre>
+{% else %}
+  <div class="card"><p class="empty">Enter a filter above and press Search.</p></div>
+{% endif %}
+{% endblock %}

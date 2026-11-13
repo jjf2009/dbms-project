@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Detection Rules{% endblock %}
+{% block crumb %}Detection Rules{% endblock %}
+{% block body %}
+<h1>Detection Rules</h1>
+<p class="sub">The scheduler evaluates every enabled rule every {{ 10 }} seconds. Threshold rules count an event per IP in a window; pattern rules match a regex against the payload.</p>
+
+<div class="card pad0">
+<table>
+  <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Event</th><th class="num">Threshold</th>
+    <th>Pattern</th><th class="num">Window</th><th>Severity</th><th>State</th><th></th></tr></thead>
+  <tbody>
+    {% for r in rules %}
+    <tr>
+      <td class="mono">#{{ r.rule_id }}</td><td>{{ r.rule_name }}</td>
+      <td><span class="badge gray">{{ r.rule_type }}</span></td>
+      <td>{{ r.event_type or '—' }}</td><td class="num mono">{{ r.threshold_count or '—' }}</td>
+      <td class="mono" style="max-width:240px;overflow:hidden;text-overflow:ellipsis">{{ r.pattern or '—' }}</td>
+      <td class="num mono">{{ r.window_seconds }}s</td>
+      <td><span class="badge {{ r.severity }}">{{ r.severity }}</span></td>
+      <td>{% if r.enabled %}<span class="badge low">enabled</span>{% else %}<span class="badge gray">disabled</span>{% endif %}</td>
+      <td style="white-space:nowrap">
+        <a class="btn sm sec" href="/siem/rules/{{ r.rule_id }}/edit" style="display:inline-block">Edit</a>
+        <form class="inline" method="post" action="/siem/rules/{{ r.rule_id }}/toggle">
+          <input type="hidden" name="enabled" value="{{ 'off' if r.enabled else 'on' }}">
+          <button type="submit" class="sec sm">{{ 'Disable' if r.enabled else 'Enable' }}</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2>New rule</h2>
+<form method="post" action="/siem/rules" class="card toolbar">
+  <div><label>Name</label><input name="rule_name" required></div>
+  <div><label>Type</label><select name="rule_type"><option value="threshold">threshold</option><option value="pattern">pattern</option></select></div>
+  <div><label>Event type</label><input name="event_type" placeholder="login_failed"></div>
+  <div><label>Threshold</label><input name="threshold_count" type="number" placeholder="5"></div>
+  <div><label>Pattern (regex)</label><input name="pattern" placeholder="or\s+1=1"></div>
+  <div><label>Window (s)</label><input name="window_seconds" type="number" value="60"></div>
+  <div><label>Severity</label><select name="severity"><option>low</option><option selected>medium</option><option>high</option></select></div>
+  <button type="submit">Create rule</button>
+</form>
+<p class="muted">Threshold rules need event type + threshold; pattern rules need a regex (the database enforces this with a CHECK constraint).</p>
+{% endblock %}

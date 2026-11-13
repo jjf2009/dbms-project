@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Alerts{% endblock %}
+{% block crumb %}Alerts{% endblock %}
+{% block body %}
+<h1>Alerts</h1>
+<p class="sub">Alerts raised by the detection engine. {% if op.role == 'viewer' %}Viewer role: summaries only.{% else %}Open an alert to review evidence, block the IP, or close it.{% endif %}</p>
+
+<div class="pills">
+  <a href="/siem/alerts" class="{{ 'on' if not status else '' }}">All</a>
+  <a href="/siem/alerts?status=open" class="{{ 'on' if status == 'open' else '' }}">Open</a>
+  <a href="/siem/alerts?status=closed" class="{{ 'on' if status == 'closed' else '' }}">Closed</a>
+</div>
+
+<div class="card pad0">
+<table>
+  <thead><tr><th>ID</th><th>Rule</th><th>Severity</th><th>Source IP</th><th>Status</th>
+    <th class="num">Logs</th><th>Blocked</th><th>Raised</th>{% if op.role in ['analyst','admin'] %}<th></th>{% endif %}</tr></thead>
+  <tbody>
+    {% for a in alerts %}
+    <tr>
+      <td class="mono">#{{ a.alert_id }}</td>
+      <td>{{ a.rule_name }}</td>
+      <td><span class="badge {{ a.severity }}">{{ a.severity }}</span></td>
+      <td class="mono">{{ a.src_ip }}</td>
+      <td><span class="badge {{ a.status }}">{{ a.status }}</span></td>
+      <td class="num mono">{{ a.log_count }}</td>
+      <td>{% if a.is_blocked %}<span class="badge active">blocked</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+      <td class="muted">{{ a.raised_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      {% if op.role in ['analyst','admin'] %}<td><a href="/siem/alerts/{{ a.alert_id }}">Review →</a></td>{% endif %}
+    </tr>
+    {% else %}
+    <tr><td class="empty" colspan="9">No alerts{{ ' with status ' + status if status else '' }}.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

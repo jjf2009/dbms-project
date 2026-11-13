@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Alert #{{ alert.alert_id }}{% endblock %}
+{% block crumb %}Alerts / #{{ alert.alert_id }}{% endblock %}
+{% block body %}
+<p class="sub"><a href="/siem/alerts">← Back to alerts</a></p>
+<h1>Alert #{{ alert.alert_id }} — {{ alert.rule_name }}</h1>
+<p class="sub">
+  <span class="badge {{ alert.severity }}">{{ alert.severity }}</span>
+  <span class="badge {{ alert.status }}">{{ alert.status }}</span>
+  &nbsp;{{ alert.rule_type }} rule
+</p>
+
+<div class="grid cols">
+  <div class="card tile"><div class="label">Source IP</div><div class="num mono" style="font-size:22px">{{ alert.src_ip }}</div></div>
+  <div class="card tile"><div class="label">Raised</div><div class="foot" style="font-size:14px;margin-top:10px">{{ alert.raised_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</div></div>
+  {% if alert.closed_at %}
+  <div class="card tile"><div class="label">Closed</div><div class="foot" style="font-size:14px;margin-top:10px">{{ alert.closed_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</div>
+    <div class="foot">{{ alert.closing_note }}</div></div>
+  {% endif %}
+</div>
+
+<div class="actions">
+  <form class="inline" method="post" action="/siem/alerts/{{ alert.alert_id }}/block">
+    <button type="submit" class="danger">⛔ Block {{ alert.src_ip }}</button>
+  </form>
+  {% if alert.status == 'open' %}
+  <form class="inline toolbar" method="post" action="/siem/alerts/{{ alert.alert_id }}/close">
+    <div><input name="note" placeholder="Closing note (optional)" style="min-width:260px"></div>
+    <button type="submit" class="sec">Close alert</button>
+  </form>
+  {% endif %}
+</div>
+
+<h2>Triggering logs <span class="muted">({{ logs|length }})</span></h2>
+<div class="card pad0">
+<table>
+  <thead><tr><th>Timestamp</th><th>Source IP</th><th>User</th><th>Event</th><th>Status</th><th>Payload</th></tr></thead>
+  <tbody>
+    {% for l in logs %}
+    <tr><td class="muted">{{ l.ts.strftime('%Y-%m-%d %H:%M:%S') }}</td><td class="mono">{{ l.src_ip }}</td>
+        <td>{{ l.actor_username or '—' }}</td><td>{{ l.event_type }}</td><td class="mono">{{ l.status or '' }}</td>
+        <td class="mono">{{ l.payload or '' }}</td></tr>
+    {% else %}
+    <tr><td class="empty" colspan="6">No linked logs.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

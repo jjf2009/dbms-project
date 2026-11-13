@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SIEM{% endblock %} · SIEM Log Engine</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+{% set path = request.url.path %}
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo"><span class="dot"></span> SIEM Engine</div>
+    <nav>
+      <div class="group">Monitor</div>
+      <a href="/siem/" class="{{ 'active' if path == '/siem/' else '' }}"><span class="ic">▣</span> Dashboard</a>
+      <a href="/siem/alerts" class="{{ 'active' if path.startswith('/siem/alert') else '' }}"><span class="ic">◆</span> Alerts</a>
+      {% if op.role in ['analyst','admin'] %}
+      <a href="/siem/blocks" class="{{ 'active' if path.startswith('/siem/block') else '' }}"><span class="ic">⛔</span> Blocked IPs</a>
+      <div class="group">Investigate</div>
+      <a href="/siem/search" class="{{ 'active' if path.startswith('/siem/search') else '' }}"><span class="ic">⌕</span> Log Search</a>
+      {% endif %}
+      {% if op.role == 'admin' %}
+      <div class="group">Admin</div>
+      <a href="/siem/rules" class="{{ 'active' if path.startswith('/siem/rules') else '' }}"><span class="ic">⚙</span> Detection Rules</a>
+      <a href="/siem/sources" class="{{ 'active' if path.startswith('/siem/sources') else '' }}"><span class="ic">⇅</span> Log Sources</a>
+      <a href="/siem/users" class="{{ 'active' if path.startswith('/siem/users') else '' }}"><span class="ic">◉</span> Operators</a>
+      <a href="/siem/report" class="{{ 'active' if path.startswith('/siem/report') else '' }}"><span class="ic">▤</span> Reports</a>
+      <a href="/siem/settings" class="{{ 'active' if path.startswith('/siem/settings') else '' }}"><span class="ic">⚑</span> Settings</a>
+      {% endif %}
+      <div class="group">Links</div>
+      <a href="/demo/" target="_blank"><span class="ic">↗</span> Demo Website</a>
+    </nav>
+  </aside>
+
+  <div>
+    <div class="topbar">
+      <span class="crumb">{% block crumb %}{{ self.title() }}{% endblock %}</span>
+      <span class="spacer"></span>
+      <span class="who">
+        <span class="pill">{{ op.role }}</span>
+        {{ op.username }}
+        <a href="/siem/logout">Logout</a>
+      </span>
+    </div>
+    <main class="content">
+      {% block body %}{% endblock %}
+    </main>
+  </div>
+</div>
+</body>
+</html>

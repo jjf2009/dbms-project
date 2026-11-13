@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block crumb %}Settings{% endblock %}
+{% block body %}
+<h1>Retention Settings</h1>
+<p class="sub">Partitions older than the retention period are archived into <code>logs_archive</code> by the scheduler (rows are moved, never deleted).</p>
+<form method="post" action="/siem/settings" class="card toolbar">
+  <div><label>Retention period (months)</label><input name="retention_months" type="number" min="0" value="{{ retention }}" style="max-width:160px"></div>
+  <button type="submit">Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block crumb %}Dashboard{% endblock %}
+{% block body %}
+<h1>Live Dashboard</h1>
+<p class="sub">Auto-refreshing every 5 seconds · signed in as <strong>{{ op.username }}</strong> ({{ op.role }})</p>
+
+<!-- top stat row -->
+<div class="grid cols">
+  <div class="card tile accent"><div class="label">Events stored</div><div class="num" id="total_est">–</div><div class="foot">across live partitions</div></div>
+  <div class="card tile"><div class="label">Events / last min</div><div class="num" id="last_min">–</div><div class="foot" id="rate_foot">ingest rate</div></div>
+  <div class="card tile bad"><div class="label">Open alerts</div><div class="num" id="open_alerts">–</div><div class="foot"><span id="open_24h">–</span> in last 24h</div></div>
+  <div class="card tile warn"><div class="label">Active blocks</div><div class="num" id="active_blocks">–</div><div class="foot">IPs currently 403'd</div></div>
+  <div class="card tile good"><div class="label">Rules enabled</div><div class="num" id="rules_enabled">–</div><div class="foot">of <span id="rules_total">–</span> total</div></div>
+  <div class="card tile"><div class="label">Ingest (acc/stored)</div><div class="num" id="ingest">–</div><div class="foot"><span id="buffered">0</span> buffered now</div></div>
+</div>
+
+<!-- chart + severity -->
+<div class="grid two" style="margin-top:16px">
+  <div class="card">
+    <h3>Events per second · last 60s</h3>
+    <canvas id="rate" height="104"></canvas>
+  </div>
+  <div class="card">
+    <h3>Open alerts by severity</h3>
+    <div class="grid cols" style="grid-template-columns:repeat(3,1fr)">
+      <div class="tile bad"><div class="label">High</div><div class="num" id="sev_high">–</div></div>
+      <div class="tile warn"><div class="label">Medium</div><div class="num" id="sev_med">–</div></div>
+      <div class="tile good"><div class="label">Low</div><div class="num" id="sev_low">–</div></div>
+    </div>
+    <h3 style="margin-top:18px">Top event types · 5 min</h3>
+    <table><tbody id="top_events"></tbody></table>
+  </div>
+</div>
+
+<!-- recent alerts + top IPs -->
+<div class="grid two" style="margin-top:16px">
+  <div class="card pad0">
+    <div style="padding:14px 18px 0"><h3 style="margin:0">Recent alerts</h3></div>
+    <table>
+      <thead><tr><th>Rule</th><th>Severity</th><th>Source IP</th><th>Status</th><th>Raised</th></tr></thead>
+      <tbody id="recent_alerts"></tbody>
+    </table>
+  </div>
+  <div class="card pad0">
+    <div style="padding:14px 18px 0"><h3 style="margin:0">Top source IPs · 5 min</h3></div>
+    <table>
+      <thead><tr><th>Source IP</th><th class="num">Events</th></tr></thead>
+      <tbody id="top_ips"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- partitions -->
+<div class="card pad0" style="margin-top:16px">
+  <div style="padding:14px 18px 0"><h3 style="margin:0">Partition status</h3></div>
+  <table>
+    <thead><tr><th>Partition</th><th>Kind</th><th class="num">~ Rows</th></tr></thead>
+    <tbody id="parts"></tbody>
+  </table>
+</div>
+
+<script src="/static/chart.umd.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => (n ?? 0).toLocaleString();
+let chart, prevStored = null;
+
+function sevBadge(s) { return `<span class="badge ${s}">${s}</span>`; }
+function statusBadge(s) { return `<span class="badge ${s}">${s}</span>`; }
+
+async function tick() {
+  let d; try { d = await (await fetch('/siem/api/dashboard')).json(); } catch { return; }
+  const c = d.counts;
+  $('total_est').textContent = fmt(d.total_est);
+  $('last_min').textContent = fmt(c.last_min);
+  $('open_alerts').textContent = fmt(c.open_alerts);
+  $('open_24h').textContent = fmt(c.open_24h);
+  $('active_blocks').textContent = fmt(c.active_blocks);
+  $('rules_enabled').textContent = fmt(c.rules_enabled);
+  $('rules_total').textContent = fmt(c.rules_total);
+  $('ingest').textContent = fmt(d.ingest.accepted) + ' / ' + fmt(d.ingest.stored);
+  $('buffered').textContent = fmt(d.ingest.buffered);
+  $('rate_foot').textContent = (prevStored === null ? 'ingest rate'
+      : '+' + fmt(d.ingest.stored - prevStored) + ' since last refresh');
+  prevStored = d.ingest.stored;
+
+  $('sev_high').textContent = d.sev.high;
+  $('sev_med').textContent = d.sev.medium;
+  $('sev_low').textContent = d.sev.low;
+
+  $('top_events').innerHTML = d.top_events.map(r =>
+     `<tr><td>${r.event_type}</td><td class="num mono">${fmt(r.n)}</td></tr>`).join('')
+     || '<tr><td class="empty" colspan=2>no recent events</td></tr>';
+  $('top_ips').innerHTML = d.top_ips.map(r =>
+     `<tr><td class="mono">${r.ip}</td><td class="num mono">${fmt(r.n)}</td></tr>`).join('')
+     || '<tr><td class="empty" colspan=2>no recent events</td></tr>';
+  $('recent_alerts').innerHTML = d.recent_alerts.map(a =>
+     `<tr><td><a href="/siem/alerts/${a.alert_id}">${a.rule_name}</a></td>
+          <td>${sevBadge(a.severity)}</td><td class="mono">${a.src_ip}</td>
+          <td>${statusBadge(a.status)}</td>
+          <td class="muted">${new Date(a.raised_at).toLocaleTimeString()}</td></tr>`).join('')
+     || '<tr><td class="empty" colspan=5>no alerts yet</td></tr>';
+  $('parts').innerHTML = d.partitions.map(p =>
+     `<tr><td class="mono">${p.name}</td>
+          <td><span class="badge ${p.kind==='archived'?'gray':'low'}">${p.kind}</span></td>
+          <td class="num mono">${fmt(p.approx_rows)}</td></tr>`).join('');
+
+  const labels = d.per_sec.map(r => r.sec), data = d.per_sec.map(r => r.n);
+  if (!chart) {
+    chart = new Chart($('rate'), {
+      type: 'line',
+      data: { labels, datasets: [{ data, borderColor: '#4f8cff', borderWidth: 2,
+        backgroundColor: 'rgba(79,140,255,.14)', fill: true, tension: .35, pointRadius: 0 }] },
+      options: { animation: false, plugins: { legend: { display: false } },
+        scales: { x: { ticks: { color: '#6b7489', maxTicksLimit: 8, font: { size: 10 } }, grid: { color: '#1b212d' } },
+                  y: { ticks: { color: '#6b7489', precision: 0 }, grid: { color: '#1b212d' }, beginAtZero: true } } }
+    });
+  } else { chart.data.labels = labels; chart.data.datasets[0].data = data; chart.update(); }
+}
+tick(); setInterval(tick, 5000);
+</script>
+{% endblock %}
