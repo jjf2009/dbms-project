@@ -4,6 +4,7 @@
 {% block body %}
 <h1>Detection Rules</h1>
 <p class="sub">The scheduler evaluates every enabled rule every {{ 10 }} seconds. Threshold rules count an event per IP in a window; pattern rules match a regex against the payload.</p>
+{% if error %}<div class="err">{{ error }}</div>{% endif %}
 
 <div class="card pad0">
 <table>

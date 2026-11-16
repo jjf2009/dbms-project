@@ -44,6 +44,7 @@ def search(f: dict, include_archived: bool = False, limit: int = 200) -> dict:
             f"({_select('logs_archive', where, limit)}) "
             f"ORDER BY ts DESC LIMIT {int(limit)}"
         )
+    archive_plan = None
     with get_conn() as conn, conn.cursor() as cur:
         t0 = time.perf_counter()
         cur.execute(sql, params)
@@ -51,4 +52,8 @@ def search(f: dict, include_archived: bool = False, limit: int = 200) -> dict:
         elapsed_ms = (time.perf_counter() - t0) * 1000
         cur.execute("EXPLAIN " + _select("logs", where, limit), params)
         plan = "\n".join(r["QUERY PLAN"] for r in cur.fetchall())
-    return {"rows": rows, "elapsed_ms": round(elapsed_ms, 1), "plan": plan}
+        if include_archived:
+            cur.execute("EXPLAIN " + _select("logs_archive", where, limit), params)
+            archive_plan = "\n".join(r["QUERY PLAN"] for r in cur.fetchall())
+    return {"rows": rows, "elapsed_ms": round(elapsed_ms, 1), "plan": plan,
+            "archive_plan": archive_plan}

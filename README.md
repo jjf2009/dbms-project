@@ -1,10 +1,11 @@
 # Real-Time SIEM Log Engine
 
 A PostgreSQL-centered SIEM (Security Information and Event Management) for a DBMS
-mini project. It ingests log events in batches, stores them in a time-partitioned
-table, searches them with indexes, detects attacks with stored rules, raises
-alerts, and lets an analyst block the attacking IP — which a bundled demo website
-then enforces with HTTP 403.
+mini project, paired with a functional AuraMarket electronics storefront. The
+storefront generates realistic traffic; the SIEM ingests log events in batches,
+stores them in a time-partitioned table, searches them with indexes, detects
+attacks with stored rules, raises alerts, and lets an analyst block the attacking
+IP — which the storefront then enforces with HTTP 403.
 
 The **database is the centre of the project**. It demonstrates: normalized schema
 design (BCNF), declarative range partitioning, BRIN / B-tree / trigram-GIN
@@ -15,6 +16,9 @@ model, relational schema and functional-dependency / normal-form analysis.
 
 > **New to this code or to Docker?** Read [`GUIDE.md`](GUIDE.md) — a plain-language
 > tour of how the code works, Docker explained from scratch, and all demo logins.
+>
+> For team ownership and the professor database demonstration, read
+> [`TEAM_CONTRIBUTION_AND_DB_DEMO.md`](TEAM_CONTRIBUTION_AND_DB_DEMO.md).
 
 ## Architecture
 
@@ -34,7 +38,7 @@ One FastAPI process, one PostgreSQL database with two schemas:
 | Alerts & blocking | `app/alerts.py` | review, close, block, unblock |
 | Dashboard / report | `app/dashboard.py` | live metrics, summary report, retention |
 | SIEM UI | `app/routers/siem.py` + `templates/` | role-gated pages (Jinja2 + Chart.js) |
-| Demo website | `app/routers/demo.py` | register/login/browse/search, blocklist 403 |
+| Demo website | `app/routers/demo.py`, `app/templates/demo_*.html` | AuraMarket catalogue, login, cart, wishlist, checkout, blocklist 403 |
 | Attack simulator | `simulator/simulate.py` | brute-force + SQL-injection traffic |
 
 ## Quick start
@@ -46,6 +50,7 @@ docker compose up --build        # Postgres + app on http://localhost:8000
 
 - SIEM dashboard: http://localhost:8000/siem/
 - Demo website:   http://localhost:8000/demo/
+- Health check:   http://localhost:8000/health
 
 The schema in `db/schema/*.sql` is applied in filename order the first time the
 database volume is created.
@@ -76,6 +81,20 @@ POSTGRES_HOST=localhost .venv/bin/python -m uvicorn app.main:app --port 8000
 | SIEM Viewer | `viewer` | `viewer123` |
 | Demo visitor | `alice` | `alice123` |
 | Demo source API key | — | `demo-key-123` |
+
+The demo storefront includes 40 products across four categories. Product
+photography is served locally from `app/static/products/`, so the catalogue works
+without internet access.
+
+### Demo storefront routes
+
+- `/demo/` — home, search, sorting, and catalogue
+- `/demo/product/{slug}` — product detail
+- `/demo/cart` — update and remove cart items
+- `/demo/wishlist` — saved products
+- `/demo/checkout` — demo checkout and order confirmation
+- `/demo/login`, `/demo/register`, `/demo/forgot-password` — visitor account flows
+- `/demo/info/{topic}` — help, shipping, returns, privacy, terms, security
 
 ## Live demo — a brute-force attack, start to finish
 
@@ -142,12 +161,17 @@ confirm each index is used.
 POSTGRES_HOST=localhost .venv/bin/python -m pytest tests/ -q
 ```
 
-Covers: API-key ingestion, lossless ingest→search, threshold detection, viewer
-RBAC, and the demo-site blocklist 403. The suite skips itself if no database is
-reachable.
+Covers: API-key ingestion, lossless ingest→search, threshold and pattern
+detection, viewer RBAC, rule management, operator editing and role changes,
+source registration, partition archiving, block/unblock behavior, archived
+search plans, and the demo-site blocklist 403. The suite skips itself if no
+database is reachable.
 
 ## Requirement coverage
 
-All 24 functional requirements are implemented. See the FR→module table in the
-project plan; `db/schema/` and `app/` headers name the FRs each file serves.
+The implementation follows all 24 functional requirements in the supplied
+Requirement Analysis document. The ER model is represented by the SIEM schema;
+the M:N Alert–Log relationship is stored in `alert_logs`, while `logs_archive`
+is the archive storage table. See `db/schema/`, `app/`, and `GUIDE.md` for the
+current module map.
 # dbms-project

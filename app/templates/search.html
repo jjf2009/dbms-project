@@ -35,6 +35,7 @@
   </div>
   <h2>Query plan <span class="muted">— proof the index was used (NFR2)</span></h2>
   <pre>{{ result.plan }}</pre>
+  {% if result.archive_plan %}<h2>Archive query plan</h2><pre>{{ result.archive_plan }}</pre>{% endif %}
 {% else %}
   <div class="card"><p class="empty">Enter a filter above and press Search.</p></div>
 {% endif %}

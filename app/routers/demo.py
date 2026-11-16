@@ -117,17 +117,17 @@ _more = [
 PRODUCTS.extend(_extra_product(*row, index=i) for i, row in enumerate(_more, start=1))
 PRODUCT_BY_SLUG = {p["slug"]: p for p in PRODUCTS}
 
-# Product photography is intentionally remote for the demo storefront so the
-# cards use real market imagery instead of generated CSS art. Sources are
-# Unsplash photos and a product photo from Kjell & Company.
-REMOTE_IMAGES = {
-    "Audio / Wireless": "https://images.unsplash.com/photo-1613629758552-443027994609?auto=format&fit=crop&w=900&q=82",
-    "Keyboards / Peripherals": "https://images.unsplash.com/photo-1781120199906-9ebcb5644407?auto=format&fit=crop&w=900&q=82",
-    "Displays / Workstation": "https://images.unsplash.com/photo-1639413665566-2f75adf7b7ca?auto=format&fit=crop&w=900&q=82",
-    "Accessories": "https://www.kjell.com/cdn-cgi/image/width%3D1400%2Cformat%3Dauto/globalassets/productimages/899362_65958_03_i315n--_02.jpg",
+# Keep all catalogue photography local so the demo satisfies the offline-run
+# requirement. These four curated product shots are reused by the catalogue's
+# product families and are served by FastAPI's static files mount.
+LOCAL_IMAGES = {
+    "Audio / Wireless": "/static/products/headphones.png",
+    "Keyboards / Peripherals": "/static/products/keyboard.png",
+    "Displays / Workstation": "/static/products/monitor.png",
+    "Accessories": "/static/products/hub.png",
 }
 for _product in PRODUCTS:
-    _product["image"] = REMOTE_IMAGES[_product["category"]]
+    _product["image"] = LOCAL_IMAGES[_product["category"]]
 
 
 def cart(request: Request) -> dict[str, int]:

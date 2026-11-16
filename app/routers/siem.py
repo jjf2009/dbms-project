@@ -126,13 +126,17 @@ def rules_create(request: Request, op=Depends(require_role("admin")),
                  event_type: str = Form(""), threshold_count: str = Form(""),
                  pattern: str = Form(""), window_seconds: int = Form(60),
                  severity: str = Form("medium")):
-    rules_mod.create_rule({
+    data = {
         "rule_name": rule_name, "rule_type": rule_type,
         "event_type": event_type or None,
         "threshold_count": int(threshold_count) if threshold_count else None,
         "pattern": pattern or None, "window_seconds": window_seconds,
         "severity": severity, "enabled": True,
-    }, op["user_id"])
+    }
+    try:
+        rules_mod.create_rule(data, op["user_id"])
+    except ValueError as exc:
+        return page(request, "rules.html", op, rules=rules_mod.list_rules(), error=str(exc))
     return RedirectResponse("/siem/rules", status_code=303)
 
 
@@ -157,13 +161,18 @@ def rules_update(request: Request, rule_id: int, op=Depends(require_role("admin"
                  event_type: str = Form(""), threshold_count: str = Form(""),
                  pattern: str = Form(""), window_seconds: int = Form(60),
                  severity: str = Form("medium"), enabled: str = Form("on")):
-    rules_mod.update_rule(rule_id, {
+    data = {
         "rule_name": rule_name, "rule_type": rule_type,
         "event_type": event_type or None,
         "threshold_count": int(threshold_count) if threshold_count else None,
         "pattern": pattern or None, "window_seconds": window_seconds,
         "severity": severity, "enabled": enabled == "on",
-    })
+    }
+    try:
+        rules_mod.update_rule(rule_id, data)
+    except ValueError as exc:
+        rule = rules_mod.get_rule(rule_id)
+        return page(request, "rule_edit.html", op, rule=rule, error=str(exc))
     return RedirectResponse("/siem/rules", status_code=303)
 
 
@@ -181,6 +190,25 @@ def users_create(request: Request, op=Depends(require_role("admin")),
         users_mod.create_user(username, email, password, role)
     except Exception:
         pass
+    return RedirectResponse("/siem/users", status_code=303)
+
+
+@router.get("/users/{user_id}/edit", response_class=HTMLResponse)
+def users_edit_form(request: Request, user_id: int, op=Depends(require_role("admin"))):
+    user = next((u for u in users_mod.list_users() if u["user_id"] == user_id), None)
+    if not user:
+        return RedirectResponse("/siem/users", status_code=303)
+    return page(request, "user_edit.html", op, user=user)
+
+
+@router.post("/users/{user_id}")
+def users_update(request: Request, user_id: int, op=Depends(require_role("admin")),
+                 username: str = Form(...), email: str = Form(...),
+                 password: str = Form(""), role: str = Form("viewer")):
+    try:
+        users_mod.update_user(user_id, username, email, role, password or None)
+    except Exception:
+        return RedirectResponse(f"/siem/users/{user_id}/edit?error=update", status_code=303)
     return RedirectResponse("/siem/users", status_code=303)
 
 

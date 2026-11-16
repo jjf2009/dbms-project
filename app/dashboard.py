@@ -88,7 +88,10 @@ def summary_report(ts_from, ts_to) -> dict:
         (ts_from, ts_to),
     )
     ingest_total = query_one(
-        "SELECT count(*) AS n FROM siem.logs WHERE ts BETWEEN %s AND %s", (ts_from, ts_to)
+        "SELECT "
+        "(SELECT count(*) FROM siem.logs WHERE ts BETWEEN %s AND %s) + "
+        "(SELECT count(*) FROM siem.logs_archive WHERE ts BETWEEN %s AND %s) AS n",
+        (ts_from, ts_to, ts_from, ts_to),
     )["n"]
     blocks = query_one(
         "SELECT count(*) AS n FROM blocked_ips WHERE blocked_at BETWEEN %s AND %s", (ts_from, ts_to)

@@ -3,21 +3,24 @@
 A plain-language companion to the README. Read this if you want to understand the
 code, or if Docker is new to you.
 
+For the three-member contribution split and a professor-ready database access
+walkthrough, see TEAM_CONTRIBUTION_AND_DB_DEMO.md.
+
 ---
 
 ## 1. The big picture
 
 The system is two things sharing one program:
 
-1. A **demo website** (a tiny shop) that normal users and attackers visit.
+1. An **AuraMarket demo storefront** that normal users and attackers visit.
 2. A **SIEM** that watches everything the website does and flags attacks.
 
-Every time anyone touches the website — views a page, searches, logs in, fails a
-login — the website writes one **log event** to the SIEM. The SIEM stores those
-events in a database, and a background job keeps asking: *"did anything suspicious
-just happen?"* If yes, it raises an **alert**. An analyst reviews the alert and
-can **block** the attacker's IP address. Once blocked, the website answers that IP
-with "403 Forbidden".
+Every handled storefront action — views a page, searches, logs in, fails a login,
+adds to cart, checks out, or visits an info page — writes one **log event** to the
+SIEM. The SIEM stores those events in a database, and a background job keeps
+asking: *"did anything suspicious just happen?"* If yes, it raises an **alert**.
+An analyst reviews the alert and can **block** the attacker's IP address. Once
+blocked, the storefront answers that IP with "403 Forbidden".
 
 That whole loop — **attack → log → alert → block → 403** — is the demo.
 
@@ -115,11 +118,12 @@ build the tables.
   hashed (never in plain text).
 
 **The web pages**
-- `routers/demo.py` — the demo shop pages. Every page first checks the blocklist
-  (returns 403 if the visitor's IP is blocked) and logs the request.
+- `routers/demo.py` — the AuraMarket catalogue, product, cart, wishlist, account,
+  checkout, and information pages. Every page first checks the blocklist (returns
+  403 if the visitor's IP is blocked) and logs the request.
 - `routers/siem.py` — the SIEM operator pages, each protected by a role check.
 - `templates/*.html` — the actual HTML pages (Jinja2 templates).
-- `static/` — the stylesheet and Chart.js (for the dashboard graph).
+- `static/` — SIEM/demo stylesheets, Chart.js, and local product photography.
 
 **Testing it**
 - `simulator/simulate.py` — a script that pretends to be an attacker, sending
@@ -238,6 +242,11 @@ Change them for anything real.
 
 You can also register a fresh visitor account on the demo site.
 
+The storefront catalogue has 40 products across four categories. Cart, wishlist,
+and demo order state are kept in the signed browser session. Checkout does not
+charge a real card, and product photography is served locally from
+`app/static/products/`.
+
 ### Log source API key
 
 The demo website sends events to the SIEM using this key (header `X-API-Key`):
@@ -254,7 +263,7 @@ With the app running (`docker compose up`, or the podman/venv flow):
 
 ```bash
 # 1. attack: 10 failed logins from one fake IP
-python simulator/simulate.py brute --ip 10.0.0.5 --count 10
+.venv/bin/python simulator/simulate.py brute --ip 10.0.0.5 --count 10
 
 # 2. open the SIEM, log in as analyst/analyst123:
 #    http://localhost:8000/siem/alerts
@@ -265,8 +274,23 @@ curl -s -o /dev/null -w "%{http_code}\n" -H "X-Forwarded-For: 10.0.0.5" http://l
 #    -> 403     (a clean IP like 10.0.0.2 still returns 200)
 ```
 
-Also try `sqli --ip 10.0.0.9` (triggers the pattern rule) and
-`normal --ip 10.0.0.2 --count 50` (harmless background traffic for the dashboard).
+Also try `.venv/bin/python simulator/simulate.py sqli --ip 10.0.0.9` (triggers the
+pattern rule) and `.venv/bin/python simulator/simulate.py normal --ip 10.0.0.2
+--count 50` (harmless background traffic for the dashboard).
+
+## 6. Current validation
+
+With PostgreSQL and the app running, execute:
+
+```bash
+PYTHONPATH=. .venv/bin/pytest -q tests/
+```
+
+The current suite contains 14 passing end-to-end tests covering page rendering,
+ingestion, detection, RBAC, rule management, operator editing, source
+registration, archiving, block/unblock behavior, archived search plans, and the
+demo-site 403 workflow. A Starlette/AnyIO deprecation warning may be displayed;
+it is non-blocking.
 
 > **Why `--ip`?** Everything runs on one machine, so every request would normally
 > share one IP. The demo and simulator pass a fake client IP in the

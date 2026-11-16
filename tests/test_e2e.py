@@ -84,6 +84,30 @@ def test_rule_create_and_edit(operator):
     assert rule2["threshold_count"] == 9 and rule2["severity"] == "high" and rule2["enabled"] is False  # FR14
 
 
+def test_operator_edit_and_role_change(operator):
+    from app.db import query_one
+    username = f"edit-{uuid.uuid4().hex[:8]}"
+    email = f"{username}@example.test"
+    r = operator.post("/siem/users", data={
+        "username": username, "email": email, "password": "password123", "role": "viewer",
+    }, follow_redirects=False)
+    assert r.status_code == 303
+    user = query_one("SELECT user_id FROM siem.users WHERE username=%s", (username,))
+    assert user
+    assert operator.get(f"/siem/users/{user['user_id']}/edit").status_code == 200
+    operator.post(f"/siem/users/{user['user_id']}", data={
+        "username": username, "email": email, "password": "password456", "role": "analyst",
+    })
+    updated = query_one("SELECT role, email FROM siem.users WHERE user_id=%s", (user["user_id"],))
+    assert updated["role"] == "analyst" and updated["email"] == email
+
+
+def test_archived_search_exposes_both_query_plans(operator):
+    page = operator.get("/siem/search?text=archive&include_archived=on")
+    assert page.status_code == 200
+    assert "Archive query plan" in page.text
+
+
 def test_source_registration_and_ingest(operator):
     import re
     from app import buffer

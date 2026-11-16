@@ -8,10 +8,28 @@ def list_users() -> list[dict]:
 
 
 def create_user(username: str, email: str, password: str, role: str) -> None:
+    if role not in {"admin", "analyst", "viewer"}:
+        raise ValueError("Invalid operator role")
     execute(
         "INSERT INTO users (username, email, password_hash, role) VALUES (%s, %s, %s, %s)",
         (username, email, hash_password(password), role),
     )
+
+
+def update_user(user_id: int, username: str, email: str, role: str, password: str | None = None) -> None:
+    """Update an operator profile, optionally rotating its password."""
+    if role not in {"admin", "analyst", "viewer"}:
+        raise ValueError("Invalid operator role")
+    if password:
+        execute(
+            "UPDATE users SET username=%s, email=%s, role=%s, password_hash=%s WHERE user_id=%s",
+            (username, email, role, hash_password(password), user_id),
+        )
+    else:
+        execute(
+            "UPDATE users SET username=%s, email=%s, role=%s WHERE user_id=%s",
+            (username, email, role, user_id),
+        )
 
 
 def set_role(user_id: int, role: str) -> None:

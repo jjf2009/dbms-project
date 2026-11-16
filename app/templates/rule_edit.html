@@ -5,6 +5,7 @@
 <p class="sub"><a href="/siem/rules">← Back to rules</a></p>
 <h1>Edit rule #{{ rule.rule_id }}</h1>
 <p class="sub">{{ rule.rule_name }}</p>
+{% if error %}<div class="err">{{ error }}</div>{% endif %}
 
 <form method="post" action="/siem/rules/{{ rule.rule_id }}" class="card toolbar">
   <div><label>Name</label><input name="rule_name" value="{{ rule.rule_name }}" required></div>

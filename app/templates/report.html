@@ -3,7 +3,7 @@
 {% block crumb %}Reports{% endblock %}
 {% block body %}
 <h1>Summary Report</h1>
-<p class="sub">Alerts and ingestion activity for a chosen period.</p>
+<p class="sub">Alerts and ingestion activity for a chosen period, including live and archived log rows.</p>
 
 <form method="get" action="/siem/report" class="card toolbar">
   <div><label>From</label><input name="ts_from" type="datetime-local" value="{{ ts_from }}"></div>
