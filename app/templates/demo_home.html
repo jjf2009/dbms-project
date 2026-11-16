@@ -1,39 +1,10 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Demo Shop</title>
-  <link rel="stylesheet" href="/static/app.css">
-</head>
-<body>
-<div class="topbar">
-  <span class="crumb">🛒 Demo Shop</span>
-  <span class="spacer"></span>
-  <span class="who">
-    {% if user %}<span class="pill">{{ user }}</span><a href="/demo/logout">Logout</a>
-    {% else %}<a href="/demo/login">Login</a> &nbsp;<a href="/demo/register">Register</a>{% endif %}
-    &nbsp;<a href="/siem/">SIEM →</a>
-  </span>
-</div>
-<main class="content" style="max-width:1100px;margin:0 auto">
-  <h1>Browse items</h1>
-  <p class="sub">Every request here is logged to the SIEM. Blocked IPs receive HTTP 403.</p>
-  <form method="get" action="/demo/" class="toolbar" style="margin-bottom:18px">
-    <div style="flex:1;min-width:240px"><input name="q" value="{{ q }}" placeholder="Search items…"></div>
-    <button type="submit">Search</button>
-  </form>
-  <div class="grid cols">
-    {% for it in items %}
-    <div class="card">
-      <strong>{{ it.name }}</strong>
-      <p class="muted" style="margin:6px 0 10px">{{ it.description }}</p>
-      <div class="tile"><div class="num" style="font-size:22px">${{ it.price }}</div></div>
-    </div>
-    {% else %}
-    <div class="card"><p class="empty">No items match “{{ q }}”.</p></div>
-    {% endfor %}
-  </div>
-</main>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AuraMarket · Tech for better days</title><link rel="stylesheet" href="/static/demo.css"></head>
+<body class="demo-body"><div class="demo-shell">
+<div class="demo-topnote">⚡ Spring Tech Drop: Up to 40% off high-fidelity audio &amp; workspace essentials. Free shipping on orders over $50. <a href="#catalogue">Shop limited deals →</a></div>
+<header class="demo-header"><div class="demo-container demo-header-row"><a class="am-logo" href="/demo/">Aura<span>Market</span></a><form class="demo-search" method="get" action="/demo/"><input name="q" value="{{ q }}" placeholder="Search products, brands, or categories"><button type="submit">Search</button></form><nav class="demo-nav"><a class="nav-strong" href="#catalogue">Deals</a><a href="#catalogue">New arrivals</a><a href="#catalogue">Electronics</a><a href="#catalogue">Home &amp; audio</a></nav><div class="demo-actions"><a class="demo-icon-link" href="/demo/wishlist" aria-label="Wishlist">♡</a><a class="demo-cart-link" href="/demo/cart">Bag <span>{{ cart_count }}</span></a>{% if user %}<span class="demo-account"><strong>{{ user }}</strong>Verified account</span><a class="demo-pill" href="/demo/logout">Log out</a>{% else %}<a class="demo-pill" href="/demo/login">Sign in</a><a class="demo-pill" href="/demo/register">Register</a>{% endif %}</div></div></header>
+<div class="demo-subnav"><div class="demo-container demo-subnav-row"><a href="#catalogue">All categories</a><a href="/demo/?q=headphones">Headphones</a><a href="#catalogue">Smart wearables</a><a href="/demo/?q=monitor">Laptops &amp; displays</a><a href="/demo/?q=keyboard">Mechanical keyboards</a><a href="#catalogue">Accessories</a></div></div>
+<section class="demo-hero"><div class="demo-container demo-hero-grid"><div><div class="eyebrow">Flagship acoustic launch</div><h1>Next-gen acoustic engineering.</h1><p>Introducing the Studio Master Headphones Series 7. Custom planar magnetic transducers, ultra-low distortion, and pristine studio fidelity.</p><div class="demo-buttons"><a class="am-btn am-btn-primary" href="/demo/product/acousticpro-anc">Shop collection</a><a class="am-btn am-btn-secondary" href="#catalogue">Explore specs</a></div></div><div class="demo-product-stage"><img class="demo-hero-image" src="https://images.unsplash.com/photo-1613629758552-443027994609?auto=format&amp;fit=crop&amp;w=900&amp;q=82" alt="AcousticPro wireless headphones"><div class="demo-product-caption"><strong>Series 7 Special Edition</strong><span>$349 · Lossless LDAC · 65-hour battery</span></div></div></div></section>
+<main id="catalogue" class="demo-container demo-section"><div class="section-heading"><div><div class="eyebrow">Curated discovery</div><h2>Trending tech &amp; daily essentials</h2><p>{{ items|length }} hand-picked products for your setup.</p></div><a class="demo-pill" href="/demo/cart">Your bag · {{ cart_count }}</a></div><div class="demo-tabs"><a class="demo-tab active" href="/demo/">All items</a><a class="demo-tab" href="/demo/?q=headphones">Headphones &amp; audio</a><a class="demo-tab" href="#catalogue">Smart wearables</a><a class="demo-tab" href="/demo/?q=monitor">Laptops &amp; displays</a><a class="demo-tab" href="/demo/?q=keyboard">Keyboards &amp; peripherals</a></div><div class="demo-products">{% for it in items %}<article class="demo-card"><a href="/demo/product/{{ it.slug }}"><div class="demo-card-art"><img src="{{ it.image }}" alt="{{ it.name }}"></div><div class="demo-card-label">{{ it.badge }} · {{ it.category }}</div><h3>{{ it.name }}</h3><div class="demo-card-meta"><span class="demo-rating">★★★★★ {{ it.rating }} <small>({{ it.reviews }})</small></span><span class="demo-card-price">${{ '%.2f'|format(it.price) }}</span></div><p class="demo-card-description">{{ it.description }}</p></a><form method="post" action="/demo/cart/add"><input type="hidden" name="slug" value="{{ it.slug }}"><button class="am-btn am-btn-primary card-add" type="submit">Add to bag</button></form></article>{% else %}<div class="demo-empty">No products are available right now.</div>{% endfor %}</div></main>
+<footer class="demo-footer"><div class="demo-container"><div class="demo-footer-grid"><div><a class="am-logo" href="/demo/">Aura<span>Market</span></a><p>Technology that fits the way you live, work, and create.</p></div><div><h3>Shop</h3><a href="#catalogue">Deals</a><a href="#catalogue">New arrivals</a><a href="/demo/?q=audio">Audio</a></div><div><h3>Help center</h3><a href="/demo/info/shipping">Shipping &amp; delivery</a><a href="/demo/info/returns">Returns</a><a href="/demo/info/contact">Contact us</a></div><div><h3>Security</h3><a href="/demo/info/privacy">Privacy policy</a><a href="/demo/info/terms">Terms of service</a><a href="/demo/info/security">Security &amp; compliance</a></div></div><div class="demo-footer-bottom"><span>© 2025 AuraMarket Technologies Inc. All rights reserved.</span><span>Secure encrypted checkout</span></div></div></footer>
+</div></body></html>

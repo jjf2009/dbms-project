@@ -2,8 +2,17 @@
 {% block title %}Dashboard{% endblock %}
 {% block crumb %}Dashboard{% endblock %}
 {% block body %}
-<h1>Live Dashboard</h1>
-<p class="sub">Auto-refreshing every 5 seconds · signed in as <strong>{{ op.username }}</strong> ({{ op.role }})</p>
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">Security operations overview</div>
+    <h1>Live dashboard</h1>
+    <p class="sub">Auto-refreshing every 5 seconds · signed in as <strong>{{ op.username }}</strong> ({{ op.role }})</p>
+  </div>
+  <div class="page-actions">
+    <span class="live-chip"><span></span> Live telemetry</span>
+    <a class="btn sec" href="/siem/report">View report</a>
+  </div>
+</div>
 
 <!-- top stat row -->
 <div class="grid cols">
@@ -110,11 +119,11 @@ async function tick() {
   if (!chart) {
     chart = new Chart($('rate'), {
       type: 'line',
-      data: { labels, datasets: [{ data, borderColor: '#4f8cff', borderWidth: 2,
-        backgroundColor: 'rgba(79,140,255,.14)', fill: true, tension: .35, pointRadius: 0 }] },
+      data: { labels, datasets: [{ data, borderColor: '#4d5fe8', borderWidth: 2,
+        backgroundColor: 'rgba(77,95,232,.12)', fill: true, tension: .35, pointRadius: 0 }] },
       options: { animation: false, plugins: { legend: { display: false } },
-        scales: { x: { ticks: { color: '#6b7489', maxTicksLimit: 8, font: { size: 10 } }, grid: { color: '#1b212d' } },
-                  y: { ticks: { color: '#6b7489', precision: 0 }, grid: { color: '#1b212d' }, beginAtZero: true } } }
+        scales: { x: { ticks: { color: '#8995a8', maxTicksLimit: 8, font: { size: 10 } }, grid: { color: '#edf0f5' } },
+                  y: { ticks: { color: '#8995a8', precision: 0 }, grid: { color: '#edf0f5' }, beginAtZero: true } } }
     });
   } else { chart.data.labels = labels; chart.data.datasets[0].data = data; chart.update(); }
 }

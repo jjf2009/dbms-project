@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}SIEM{% endblock %} · SIEM Log Engine</title>
+  <title>{% block title %}Aegis SIEM{% endblock %} · Security Operations Console</title>
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
 {% set path = request.url.path %}
 <div class="app">
   <aside class="sidebar">
-    <div class="logo"><span class="dot"></span> SIEM Engine</div>
+    <div class="logo"><span class="dot"></span><span>Aegis SIEM</span></div>
+    <div class="sidebar-meta"><span></span> Production cluster</div>
     <nav>
       <div class="group">Monitor</div>
       <a href="/siem/" class="{{ 'active' if path == '/siem/' else '' }}"><span class="ic">▣</span> Dashboard</a>
@@ -33,7 +34,7 @@
     </nav>
   </aside>
 
-  <div>
+  <div class="app-main">
     <div class="topbar">
       <span class="crumb">{% block crumb %}{{ self.title() }}{% endblock %}</span>
       <span class="spacer"></span>
