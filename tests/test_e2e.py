@@ -165,3 +165,31 @@ def test_blocklist_returns_403(operator):
             "ON CONFLICT DO NOTHING", (alert["alert_id"], ip, admin["user_id"]))
     r = operator.get("/demo/", headers={"X-Forwarded-For": ip})
     assert r.status_code == 403  # FR6
+
+
+def test_benign_traffic_does_not_trigger_sqli_alert(operator):
+    from app import buffer
+    from app.detection import run_detection
+    ip = "203.0.113.88"
+    # Normal cart add and update operations
+    operator.post("/demo/cart/add", data={"slug": "hyperkey-pro", "quantity": 1},
+                  headers={"X-Forwarded-For": ip})
+    operator.post("/demo/cart/update", data={"slug": "hyperkey-pro", "quantity": 2},
+                  headers={"X-Forwarded-For": ip})
+    buffer.flush()
+    run_detection()
+    # Ensure this IP was NOT flagged with an open alert
+    open_alerts = operator.get("/siem/alerts?status=open").text
+    assert ip not in open_alerts
+
+
+def test_demo_items_database_backed(operator):
+    # Verify browsing items with and without category filtering
+    r_all = operator.get("/demo/")
+    assert r_all.status_code == 200
+    assert "AcousticPro" in r_all.text
+
+    r_audio = operator.get("/demo/?category=Audio")
+    assert r_audio.status_code == 200
+    assert "AcousticPro" in r_audio.text
+

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#3498db;stop-opacity:0.6"/>
+    </linearGradient>
+    <filter id="sh"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.18"/></filter>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)" rx="16"/>
+  <g transform="translate(200,140)" filter="url(#sh)">
+    <rect x="-60" y="-24" width="120" height="48" rx="8" fill="white" opacity="0.9"/><rect x="-52" y="-16" width="16" height="12" rx="2" fill="#3498db" opacity="0.8"/><rect x="-30" y="-16" width="16" height="12" rx="2" fill="#2c3e50" opacity="0.6"/><rect x="-8" y="-16" width="16" height="12" rx="2" fill="#2c3e50" opacity="0.6"/><rect x="14" y="-16" width="16" height="12" rx="2" fill="#3498db" opacity="0.8"/><rect x="36" y="-16" width="16" height="12" rx="2" fill="#2c3e50" opacity="0.6"/><rect x="-52" y="4" width="40" height="12" rx="2" fill="#2c3e50" opacity="0.6"/><rect x="-6" y="4" width="58" height="12" rx="2" fill="#3498db" opacity="0.6"/>
+  </g>
+  <text x="200" y="276" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="white" opacity="0.75" font-weight="500">DeskKey 65</text>
+</svg>

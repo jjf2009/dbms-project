@@ -21,10 +21,10 @@ router = APIRouter(prefix="/demo", tags=["demo"])
 templates = Jinja2Templates(directory="app/templates")
 
 PRODUCTS = [
-    {"slug": "acousticpro-anc", "name": "AcousticPro ANC Wireless Headphones", "category": "Audio / Wireless", "description": "Adaptive noise cancellation, spatial audio, and 65-hour battery life.", "price": Decimal("299.99"), "compare_at": Decimal("349.99"), "rating": "4.9", "reviews": 1248, "image": "/static/products/headphones.png", "badge": "Best seller", "features": ["Adaptive active noise cancellation", "Bluetooth 5.3 with LDAC", "65-hour extended battery"]},
-    {"slug": "hyperkey-pro", "name": "HyperKey Pro Mechanical Keyboard", "category": "Keyboards / Peripherals", "description": "Hot-swappable switches, low-latency wireless, and per-key lighting.", "price": Decimal("149.00"), "compare_at": None, "rating": "4.7", "reviews": 420, "image": "/static/products/keyboard.png", "badge": "Popular", "features": ["Hot-swappable mechanical switches", "Tri-mode wireless connectivity", "Aluminum top plate"]},
-    {"slug": "aura-view-27", "name": "AuraView 27-inch 4K HDR Monitor", "category": "Displays / Workstation", "description": "Crisp 4K detail, HDR color, and a clean edge-to-edge workstation view.", "price": Decimal("479.00"), "compare_at": Decimal("529.00"), "rating": "4.9", "reviews": 2105, "image": "/static/products/monitor.png", "badge": "New", "features": ["27-inch 4K HDR IPS panel", "USB-C power delivery", "Height-adjustable stand"]},
-    {"slug": "connect-7", "name": "Connect 7-in-1 USB-C Hub", "category": "Accessories", "description": "One compact aluminum hub for HDMI, ethernet, storage, and more.", "price": Decimal("39.50"), "compare_at": None, "rating": "4.8", "reviews": 834, "image": "/static/products/hub.png", "badge": "Great value", "features": ["4K HDMI output", "100W pass-through charging", "Gigabit ethernet"]},
+    {"slug": "acousticpro-anc", "name": "AcousticPro ANC Wireless Headphones", "category": "Audio / Wireless", "description": "Adaptive noise cancellation, spatial audio, and 65-hour battery life.", "price": Decimal("299.99"), "compare_at": Decimal("349.99"), "rating": "4.9", "reviews": 1248, "image": "/static/products/acousticpro-anc.svg", "badge": "Best seller", "features": ["Adaptive active noise cancellation", "Bluetooth 5.3 with LDAC", "65-hour extended battery"]},
+    {"slug": "hyperkey-pro", "name": "HyperKey Pro Mechanical Keyboard", "category": "Keyboards / Peripherals", "description": "Hot-swappable switches, low-latency wireless, and per-key lighting.", "price": Decimal("149.00"), "compare_at": None, "rating": "4.7", "reviews": 420, "image": "/static/products/hyperkey-pro.svg", "badge": "Popular", "features": ["Hot-swappable mechanical switches", "Tri-mode wireless connectivity", "Aluminum top plate"]},
+    {"slug": "aura-view-27", "name": "AuraView 27-inch 4K HDR Monitor", "category": "Displays / Workstation", "description": "Crisp 4K detail, HDR color, and a clean edge-to-edge workstation view.", "price": Decimal("479.00"), "compare_at": Decimal("529.00"), "rating": "4.9", "reviews": 2105, "image": "/static/products/aura-view-27.svg", "badge": "New", "features": ["27-inch 4K HDR IPS panel", "USB-C power delivery", "Height-adjustable stand"]},
+    {"slug": "connect-7", "name": "Connect 7-in-1 USB-C Hub", "category": "Accessories", "description": "One compact aluminum hub for HDMI, ethernet, storage, and more.", "price": Decimal("39.50"), "compare_at": None, "rating": "4.8", "reviews": 834, "image": "/static/products/connect-7.svg", "badge": "Great value", "features": ["4K HDMI output", "100W pass-through charging", "Gigabit ethernet"]},
 ]
 PRODUCT_BY_SLUG = {p["slug"]: p for p in PRODUCTS}
 
@@ -77,71 +77,134 @@ def _extra_product(slug, name, category, description, price, image, badge, index
 
 
 _more = [
-    ("studio-master-7", "Studio Master Series 7 Headphones", "Audio / Wireless", "Planar magnetic detail with a wide, natural soundstage.", "349.00", "/static/products/headphones.png", "New"),
-    ("aurapods-elite", "AuraPods Elite Earbuds", "Audio / Wireless", "Pocket-sized ANC earbuds with a comfortable all-day fit.", "159.00", "/static/products/headphones.png", "Staff pick"),
-    ("sonicpulse-go", "SonicPulse Go Speaker", "Audio / Wireless", "Room-filling sound in a splash-proof portable body.", "129.00", "/static/products/headphones.png", "Popular"),
-    ("wavebeam-mini", "WaveBeam Mini Soundbar", "Audio / Wireless", "A compact desktop soundbar for films, music, and calls.", "89.00", "/static/products/headphones.png", "Great value"),
-    ("quietline-pro", "QuietLine Conference Headset", "Audio / Wireless", "Clear voice pickup and comfortable noise isolation for workdays.", "119.00", "/static/products/headphones.png", "Work from home"),
-    ("bassline-max", "Bassline Max Over-Ear Headphones", "Audio / Wireless", "Deep bass, balanced mids, and a soft memory-foam fit.", "199.00", "/static/products/headphones.png", "Popular"),
-    ("airloop-sport", "AirLoop Sport Earbuds", "Audio / Wireless", "Secure wireless audio with sweat-resistant sport ear hooks.", "109.00", "/static/products/headphones.png", "Active"),
-    ("hush-cans", "Hush Cans Travel Headphones", "Audio / Wireless", "Fold-flat travel headphones with adaptive cabin noise control.", "179.00", "/static/products/headphones.png", "Travel ready"),
-    ("roomtone-home", "RoomTone Home Audio Bar", "Audio / Wireless", "Balanced room audio with a warm profile for everyday listening.", "139.00", "/static/products/headphones.png", "Home audio"),
-    ("deskkey-65", "DeskKey 65 Mechanical Keyboard", "Keyboards / Peripherals", "A compact 65% layout with tactile switches and a soft wrist rest.", "129.00", "/static/products/keyboard.png", "Popular"),
-    ("typeflow-wireless", "TypeFlow Wireless Keyboard", "Keyboards / Peripherals", "Quiet low-profile keys with multi-device pairing.", "99.00", "/static/products/keyboard.png", "New"),
-    ("macrodeck-mini", "MacroDeck Mini Controller", "Keyboards / Peripherals", "Nine programmable keys for creative shortcuts and workflows.", "79.00", "/static/products/keyboard.png", "Creator pick"),
-    ("glowpad-xl", "GlowPad XL Desk Mat", "Keyboards / Peripherals", "A water-resistant desk mat with a smooth tracking surface.", "35.00", "/static/products/keyboard.png", "Great value"),
-    ("clicker-pro", "Clicker Pro Wireless Mouse", "Keyboards / Peripherals", "Silent clicks, precise tracking, and a comfortable right-handed shape.", "69.00", "/static/products/keyboard.png", "Bestseller"),
-    ("trackball-one", "Trackball One Ergonomic Mouse", "Keyboards / Peripherals", "Thumb-controlled precision for long, comfortable work sessions.", "89.00", "/static/products/keyboard.png", "Ergonomic"),
-    ("keycap-studio", "Keycap Studio Accent Set", "Keyboards / Peripherals", "A 104-key artisan accent set to personalize your keyboard.", "29.00", "/static/products/keyboard.png", "Fresh drop"),
-    ("deskpad-wireless", "DeskPad Wireless Charging Mat", "Keyboards / Peripherals", "A clean work surface with a hidden Qi charging zone.", "59.00", "/static/products/keyboard.png", "Smart desk"),
-    ("numkey-wireless", "NumKey Wireless Numpad", "Keyboards / Peripherals", "A compact programmable number pad for finance and creative work.", "49.00", "/static/products/keyboard.png", "Add-on"),
-    ("aura-view-24", "AuraView 24-inch Work Monitor", "Displays / Workstation", "A bright Full HD panel for focused work and everyday browsing.", "229.00", "/static/products/monitor.png", "Great value"),
-    ("aura-view-ultra", "AuraView UltraWide 34 Monitor", "Displays / Workstation", "Ultra-wide space for timelines, dashboards, and side-by-side work.", "699.00", "/static/products/monitor.png", "Studio grade"),
-    ("pixelstand-4k", "PixelStand 4K Monitor", "Displays / Workstation", "Sharp color-accurate detail on a minimal adjustable stand.", "399.00", "/static/products/monitor.png", "Popular"),
-    ("travel-screen", "TravelScreen 15 Portable Display", "Displays / Workstation", "A lightweight second screen for flexible work anywhere.", "249.00", "/static/products/monitor.png", "Travel ready"),
-    ("colorcraft-27", "ColorCraft 27 Creator Display", "Displays / Workstation", "Wide-gamut color and USB-C connectivity for creative work.", "549.00", "/static/products/monitor.png", "Creator pick"),
-    ("focusview-22", "FocusView 22 Compact Monitor", "Displays / Workstation", "A compact, crisp monitor for smaller desks and dorm rooms.", "179.00", "/static/products/monitor.png", "Compact"),
-    ("standhub", "StandHub Monitor Dock", "Displays / Workstation", "Raise your screen and connect your whole desk through one dock.", "119.00", "/static/products/monitor.png", "Smart desk"),
-    ("readmode-27", "ReadMode 27 Eye Comfort Display", "Displays / Workstation", "Flicker-free viewing with warm reading modes for late nights.", "319.00", "/static/products/monitor.png", "Wellness"),
-    ("aura-view-vertical", "AuraView Vertical 24 Monitor", "Displays / Workstation", "A portrait-friendly display built for documents, code, and feeds.", "279.00", "/static/products/monitor.png", "Flexible"),
-    ("connect-pro", "Connect Pro Thunderbolt Dock", "Accessories", "One-cable power, displays, storage, and network for your desk.", "189.00", "/static/products/hub.png", "Pro setup"),
-    ("chargecube-65", "ChargeCube 65W GaN Charger", "Accessories", "Small, powerful USB-C charging for laptops, tablets, and phones.", "49.00", "/static/products/hub.png", "Great value"),
-    ("cablekit", "CableKit Desk Organizer", "Accessories", "A tidy modular kit for routing and labeling every desk cable.", "24.00", "/static/products/hub.png", "Bestseller"),
-    ("traveldock", "TravelDock Compact Hub", "Accessories", "A pocket-friendly hub with HDMI, USB-A, and SD card access.", "45.00", "/static/products/hub.png", "Travel ready"),
-    ("powerstrip-mini", "PowerStrip Mini with USB-C", "Accessories", "A compact surge-protected power strip with two USB-C ports.", "39.00", "/static/products/hub.png", "Smart desk"),
-    ("webcam-1080", "ClearView 1080p Webcam", "Accessories", "Autofocus video with a privacy shutter for calls and streaming.", "45.00", "/static/products/hub.png", "Work from home"),
-    ("lightbar-pro", "LightBar Pro Monitor Light", "Accessories", "Glare-free adjustable light for comfortable desk sessions.", "59.00", "/static/products/hub.png", "New"),
-    ("standfold", "StandFold Laptop Stand", "Accessories", "An adjustable aluminum stand that lifts your screen to eye level.", "69.00", "/static/products/hub.png", "Ergonomic"),
-    ("privacycam", "PrivacyCam Slide Cover Pack", "Accessories", "A simple set of camera covers for laptops and external webcams.", "12.00", "/static/products/hub.png", "Essential"),
+    ("studio-master-7", "Studio Master Series 7 Headphones", "Audio / Wireless", "Planar magnetic detail with a wide, natural soundstage.", "349.00", "/static/products/studio-master-7.svg", "New"),
+    ("aurapods-elite", "AuraPods Elite Earbuds", "Audio / Wireless", "Pocket-sized ANC earbuds with a comfortable all-day fit.", "159.00", "/static/products/aurapods-elite.svg", "Staff pick"),
+    ("sonicpulse-go", "SonicPulse Go Speaker", "Audio / Wireless", "Room-filling sound in a splash-proof portable body.", "129.00", "/static/products/sonicpulse-go.svg", "Popular"),
+    ("wavebeam-mini", "WaveBeam Mini Soundbar", "Audio / Wireless", "A compact desktop soundbar for films, music, and calls.", "89.00", "/static/products/wavebeam-mini.svg", "Great value"),
+    ("quietline-pro", "QuietLine Conference Headset", "Audio / Wireless", "Clear voice pickup and comfortable noise isolation for workdays.", "119.00", "/static/products/studio-master-7.svg", "Work from home"),
+    ("bassline-max", "Bassline Max Over-Ear Headphones", "Audio / Wireless", "Deep bass, balanced mids, and a soft memory-foam fit.", "199.00", "/static/products/acousticpro-anc.svg", "Popular"),
+    ("airloop-sport", "AirLoop Sport Earbuds", "Audio / Wireless", "Secure wireless audio with sweat-resistant sport ear hooks.", "109.00", "/static/products/aurapods-elite.svg", "Active"),
+    ("hush-cans", "Hush Cans Travel Headphones", "Audio / Wireless", "Fold-flat travel headphones with adaptive cabin noise control.", "179.00", "/static/products/studio-master-7.svg", "Travel ready"),
+    ("roomtone-home", "RoomTone Home Audio Bar", "Audio / Wireless", "Balanced room audio with a warm profile for everyday listening.", "139.00", "/static/products/wavebeam-mini.svg", "Home audio"),
+    ("deskkey-65", "DeskKey 65 Mechanical Keyboard", "Keyboards / Peripherals", "A compact 65% layout with tactile switches and a soft wrist rest.", "129.00", "/static/products/deskkey-65.svg", "Popular"),
+    ("typeflow-wireless", "TypeFlow Wireless Keyboard", "Keyboards / Peripherals", "Quiet low-profile keys with multi-device pairing.", "99.00", "/static/products/typeflow-wireless.svg", "New"),
+    ("macrodeck-mini", "MacroDeck Mini Controller", "Keyboards / Peripherals", "Nine programmable keys for creative shortcuts and workflows.", "79.00", "/static/products/macrodeck-mini.svg", "Creator pick"),
+    ("glowpad-xl", "GlowPad XL Desk Mat", "Keyboards / Peripherals", "A water-resistant desk mat with a smooth tracking surface.", "35.00", "/static/products/deskkey-65.svg", "Great value"),
+    ("clicker-pro", "Clicker Pro Wireless Mouse", "Keyboards / Peripherals", "Silent clicks, precise tracking, and a comfortable right-handed shape.", "69.00", "/static/products/clicker-pro.svg", "Bestseller"),
+    ("trackball-one", "Trackball One Ergonomic Mouse", "Keyboards / Peripherals", "Thumb-controlled precision for long, comfortable work sessions.", "89.00", "/static/products/clicker-pro.svg", "Ergonomic"),
+    ("keycap-studio", "Keycap Studio Accent Set", "Keyboards / Peripherals", "A 104-key artisan accent set to personalize your keyboard.", "29.00", "/static/products/hyperkey-pro.svg", "Fresh drop"),
+    ("deskpad-wireless", "DeskPad Wireless Charging Mat", "Keyboards / Peripherals", "A clean work surface with a hidden Qi charging zone.", "59.00", "/static/products/macrodeck-mini.svg", "Smart desk"),
+    ("numkey-wireless", "NumKey Wireless Numpad", "Keyboards / Peripherals", "A compact programmable number pad for finance and creative work.", "49.00", "/static/products/macrodeck-mini.svg", "Add-on"),
+    ("aura-view-24", "AuraView 24-inch Work Monitor", "Displays / Workstation", "A bright Full HD panel for focused work and everyday browsing.", "229.00", "/static/products/aura-view-24.svg", "Great value"),
+    ("aura-view-ultra", "AuraView UltraWide 34 Monitor", "Displays / Workstation", "Ultra-wide space for timelines, dashboards, and side-by-side work.", "699.00", "/static/products/aura-view-ultra.svg", "Studio grade"),
+    ("pixelstand-4k", "PixelStand 4K Monitor", "Displays / Workstation", "Sharp color-accurate detail on a minimal adjustable stand.", "399.00", "/static/products/pixelstand-4k.svg", "Popular"),
+    ("travel-screen", "TravelScreen 15 Portable Display", "Displays / Workstation", "A lightweight second screen for flexible work anywhere.", "249.00", "/static/products/travel-screen.svg", "Travel ready"),
+    ("colorcraft-27", "ColorCraft 27 Creator Display", "Displays / Workstation", "Wide-gamut color and USB-C connectivity for creative work.", "549.00", "/static/products/pixelstand-4k.svg", "Creator pick"),
+    ("focusview-22", "FocusView 22 Compact Monitor", "Displays / Workstation", "A compact, crisp monitor for smaller desks and dorm rooms.", "179.00", "/static/products/aura-view-24.svg", "Compact"),
+    ("standhub", "StandHub Monitor Dock", "Displays / Workstation", "Raise your screen and connect your whole desk through one dock.", "119.00", "/static/products/aura-view-27.svg", "Smart desk"),
+    ("readmode-27", "ReadMode 27 Eye Comfort Display", "Displays / Workstation", "Flicker-free viewing with warm reading modes for late nights.", "319.00", "/static/products/aura-view-24.svg", "Wellness"),
+    ("aura-view-vertical", "AuraView Vertical 24 Monitor", "Displays / Workstation", "A portrait-friendly display built for documents, code, and feeds.", "279.00", "/static/products/travel-screen.svg", "Flexible"),
+    ("connect-pro", "Connect Pro Thunderbolt Dock", "Accessories", "One-cable power, displays, storage, and network for your desk.", "189.00", "/static/products/connect-pro.svg", "Pro setup"),
+    ("chargecube-65", "ChargeCube 65W GaN Charger", "Accessories", "Small, powerful USB-C charging for laptops, tablets, and phones.", "49.00", "/static/products/chargecube-65.svg", "Great value"),
+    ("cablekit", "CableKit Desk Organizer", "Accessories", "A tidy modular kit for routing and labeling every desk cable.", "24.00", "/static/products/cablekit.svg", "Bestseller"),
+    ("traveldock", "TravelDock Compact Hub", "Accessories", "A pocket-friendly hub with HDMI, USB-A, and SD card access.", "45.00", "/static/products/connect-7.svg", "Travel ready"),
+    ("powerstrip-mini", "PowerStrip Mini with USB-C", "Accessories", "A compact surge-protected power strip with two USB-C ports.", "39.00", "/static/products/chargecube-65.svg", "Smart desk"),
+    ("webcam-1080", "ClearView 1080p Webcam", "Accessories", "Autofocus video with a privacy shutter for calls and streaming.", "45.00", "/static/products/webcam-1080.svg", "Work from home"),
+    ("lightbar-pro", "LightBar Pro Monitor Light", "Accessories", "Glare-free adjustable light for comfortable desk sessions.", "59.00", "/static/products/connect-pro.svg", "New"),
+    ("standfold", "StandFold Laptop Stand", "Accessories", "An adjustable aluminum stand that lifts your screen to eye level.", "69.00", "/static/products/connect-7.svg", "Ergonomic"),
+    ("privacycam", "PrivacyCam Slide Cover Pack", "Accessories", "A simple set of camera covers for laptops and external webcams.", "12.00", "/static/products/webcam-1080.svg", "Essential"),
 ]
 PRODUCTS.extend(_extra_product(*row, index=i) for i, row in enumerate(_more, start=1))
 PRODUCT_BY_SLUG = {p["slug"]: p for p in PRODUCTS}
-
-# Keep all catalogue photography local so the demo satisfies the offline-run
-# requirement. These four curated product shots are reused by the catalogue's
-# product families and are served by FastAPI's static files mount.
-LOCAL_IMAGES = {
-    "Audio / Wireless": "/static/products/headphones.png",
-    "Keyboards / Peripherals": "/static/products/keyboard.png",
-    "Displays / Workstation": "/static/products/monitor.png",
-    "Accessories": "/static/products/hub.png",
-}
-for _product in PRODUCTS:
-    _product["image"] = LOCAL_IMAGES[_product["category"]]
 
 
 def cart(request: Request) -> dict[str, int]:
     return request.session.setdefault("demo_cart", {})
 
 
+def fetch_products(q: str = "", category: str = "", sort: str = "featured") -> list[dict]:
+    """Query items from the PostgreSQL demo.items table, falling back safely."""
+    try:
+        sql = "SELECT item_id, slug, name, category, description, price, rating, reviews, image, badge FROM demo.items WHERE 1=1"
+        params = []
+        if q:
+            sql += " AND (name ILIKE %s OR description ILIKE %s OR category ILIKE %s)"
+            term = f"%{q}%"
+            params.extend([term, term, term])
+        if category:
+            sql += " AND category ILIKE %s"
+            params.append(f"%{category}%")
+        if sort == "price_low":
+            sql += " ORDER BY price ASC"
+        elif sort == "price_high":
+            sql += " ORDER BY price DESC"
+        elif sort == "rating":
+            sql += " ORDER BY rating DESC"
+        else:
+            sql += " ORDER BY item_id ASC"
+        rows = query(sql, tuple(params))
+        if rows:
+            for r in rows:
+                r["price"] = Decimal(str(r["price"]))
+                r["features"] = ["Designed for everyday setups", "Fast, reliable connectivity", "Two-year AuraMarket warranty"]
+            return rows
+    except Exception:
+        pass
+
+    # Safe fallback if database is loading or running offline
+    term = q.strip().lower()
+    cat = category.strip().lower()
+    items = []
+    for p in PRODUCTS:
+        if cat and cat not in p["category"].lower():
+            continue
+        if term and term not in (p["name"] + " " + p["description"] + " " + p["category"]).lower():
+            continue
+        items.append(p)
+    if sort == "price_low":
+        items = sorted(items, key=lambda p: p["price"])
+    elif sort == "price_high":
+        items = sorted(items, key=lambda p: p["price"], reverse=True)
+    elif sort == "rating":
+        items = sorted(items, key=lambda p: p["rating"], reverse=True)
+    return items
+
+
+def get_product(slug: str) -> dict | None:
+    """Fetch one product from demo.items or fallback."""
+    try:
+        row = query_one(
+            "SELECT item_id, slug, name, category, description, price, rating, reviews, image, badge FROM demo.items WHERE slug = %s",
+            (slug,),
+        )
+        if row:
+            row["price"] = Decimal(str(row["price"]))
+            row["features"] = ["Designed for everyday setups", "Fast, reliable connectivity", "Two-year AuraMarket warranty"]
+            if slug == "acousticpro-anc":
+                row["features"] = ["Adaptive active noise cancellation", "Bluetooth 5.3 with LDAC", "65-hour extended battery"]
+                row["compare_at"] = Decimal("349.99")
+            elif slug == "aura-view-27":
+                row["features"] = ["27-inch 4K HDR IPS panel", "USB-C power delivery", "Height-adjustable stand"]
+                row["compare_at"] = Decimal("529.00")
+            elif slug == "hyperkey-pro":
+                row["features"] = ["Hot-swappable mechanical switches", "Tri-mode wireless connectivity", "Aluminum top plate"]
+                row["compare_at"] = None
+            else:
+                row["compare_at"] = None
+            return row
+    except Exception:
+        pass
+    return PRODUCT_BY_SLUG.get(slug)
+
+
 def cart_lines(request: Request):
     lines, total, count = [], Decimal("0"), 0
     for slug, quantity in cart(request).items():
-        product = PRODUCT_BY_SLUG.get(slug)
+        product = get_product(slug)
         if not product:
             continue
         quantity = max(1, int(quantity))
-        subtotal = product["price"] * quantity
+        subtotal = Decimal(str(product["price"])) * quantity
         lines.append({"product": product, "quantity": quantity, "subtotal": subtotal})
         total += subtotal
         count += quantity
@@ -154,21 +217,14 @@ def context(request: Request, **extra):
 
 
 @router.get("/", response_class=HTMLResponse)
-def home(request: Request, q: str = "", sort: str = "featured"):
+def home(request: Request, q: str = "", sort: str = "featured", category: str = ""):
     blocked = _guard(request)
     if blocked:
         return blocked
-    term = q.strip().lower()
-    items = [p for p in PRODUCTS if not term or term in (p["name"] + " " + p["description"] + " " + p["category"]).lower()]
-    if sort == "price_low":
-        items = sorted(items, key=lambda p: p["price"])
-    elif sort == "price_high":
-        items = sorted(items, key=lambda p: p["price"], reverse=True)
-    elif sort == "rating":
-        items = sorted(items, key=lambda p: p["rating"], reverse=True)
-    _log(request, "search" if q else "page_view", payload=q or "/")
+    items = fetch_products(q=q.strip(), category=category.strip(), sort=sort)
+    _log(request, "search" if q else "page_view", payload=q or (f"category={category}" if category else "/"))
     template = "demo_search.html" if q else "demo_home.html"
-    return templates.TemplateResponse(request, template, context(request, items=items, q=q, sort=sort))
+    return templates.TemplateResponse(request, template, context(request, items=items, q=q, sort=sort, category=category))
 
 
 @router.get("/product/{slug}", response_class=HTMLResponse)
@@ -176,12 +232,13 @@ def product_detail(request: Request, slug: str):
     blocked = _guard(request)
     if blocked:
         return blocked
-    product = PRODUCT_BY_SLUG.get(slug)
+    product = get_product(slug)
     if not product:
         _log(request, "product_not_found", status=404, payload=slug)
         return RedirectResponse("/demo/", status_code=303)
     _log(request, "product_view", payload=slug)
-    related = [p for p in PRODUCTS if p["slug"] != slug][:3]
+    all_items = fetch_products()
+    related = [p for p in all_items if p["slug"] != slug][:3]
     return templates.TemplateResponse(request, "demo_product.html", context(request, product=product, related=related))
 
 
@@ -190,11 +247,12 @@ def add_to_cart(request: Request, slug: str = Form(...), quantity: int = Form(1)
     blocked = _guard(request)
     if blocked:
         return blocked
-    if slug in PRODUCT_BY_SLUG:
+    product = get_product(slug)
+    if product:
         items = cart(request)
         items[slug] = max(0, int(items.get(slug, 0))) + max(1, min(quantity, 10))
         request.session["demo_cart"] = items
-        _log(request, "cart_add", status=303, payload=f"slug={slug};quantity={quantity}")
+        _log(request, "cart_add", status=303, payload=f"slug={slug}&quantity={quantity}")
     else:
         _log(request, "cart_add_invalid", status=400, payload=f"slug={slug}")
     return RedirectResponse(request.headers.get("referer") or "/demo/", status_code=303)
@@ -216,13 +274,14 @@ def update_cart(request: Request, slug: str = Form(...), quantity: int = Form(..
     if blocked:
         return blocked
     items = cart(request)
-    if slug in PRODUCT_BY_SLUG:
+    product = get_product(slug)
+    if product:
         if quantity <= 0:
             items.pop(slug, None)
         else:
             items[slug] = min(quantity, 10)
     request.session["demo_cart"] = items
-    _log(request, "cart_update", status=303, payload=f"slug={slug};quantity={quantity}")
+    _log(request, "cart_update", status=303, payload=f"slug={slug}&quantity={quantity}")
     return RedirectResponse("/demo/cart", status_code=303)
 
 
@@ -243,7 +302,8 @@ def wishlist_page(request: Request):
     blocked = _guard(request)
     if blocked:
         return blocked
-    saved = [PRODUCT_BY_SLUG[s] for s in request.session.get("demo_wishlist", []) if s in PRODUCT_BY_SLUG]
+    saved_slugs = request.session.get("demo_wishlist", [])
+    saved = [get_product(s) for s in saved_slugs if get_product(s)]
     _log(request, "wishlist_view", payload=f"items={len(saved)}")
     return templates.TemplateResponse(request, "demo_wishlist.html", context(request, items=saved))
 
@@ -255,7 +315,7 @@ def toggle_wishlist(request: Request, slug: str = Form(...)):
         return blocked
     saved = list(request.session.get("demo_wishlist", []))
     event_type = "wishlist_add"
-    if slug in PRODUCT_BY_SLUG:
+    if get_product(slug):
         if slug in saved:
             saved.remove(slug)
             event_type = "wishlist_remove"
@@ -290,7 +350,7 @@ def checkout(request: Request, full_name: str = Form(...), email: str = Form(...
         return RedirectResponse("/demo/cart", status_code=303)
     request.session["demo_cart"] = {}
     request.session["demo_order"] = {"number": "AM-" + str(abs(hash((email, full_name))) % 1000000).zfill(6), "total": str(total), "count": count}
-    _log(request, "checkout_completed", status=303, actor_username=email, payload=f"order_total={total};items={count}")
+    _log(request, "checkout_completed", status=303, actor_username=email, payload=f"order_total={total}&items={count}")
     return RedirectResponse("/demo/order-confirmation", status_code=303)
 
 
@@ -308,14 +368,10 @@ def order_confirmation(request: Request):
 
 
 @router.get("/login", response_class=HTMLResponse)
-def login_form(request: Request, provider: str = "", reset: str = ""):
+def login_form(request: Request, reset: str = ""):
     blocked = _guard(request)
     if blocked:
         return blocked
-    if provider in {"google", "apple"}:
-        request.session["demo_user"] = f"{provider}-demo@auramarket.io"
-        _log(request, "login_success", status=303, actor_username=request.session["demo_user"], payload=f"provider={provider}")
-        return RedirectResponse("/demo/", status_code=303)
     _log(request, "login_view", payload="/demo/login")
     return templates.TemplateResponse(request, "demo_login.html", {"mode": "login", "reset_notice": bool(reset)})
 

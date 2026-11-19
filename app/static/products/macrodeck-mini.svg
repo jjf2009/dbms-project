@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c3483;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#9b59b6;stop-opacity:0.6"/>
+    </linearGradient>
+    <filter id="sh"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.18"/></filter>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)" rx="16"/>
+  <g transform="translate(200,140)" filter="url(#sh)">
+    <rect x="-38" y="-38" width="76" height="76" rx="10" fill="white" opacity="0.9"/><rect x="-28" y="-28" width="20" height="20" rx="4" fill="#6c3483"/><rect x="-2" y="-28" width="20" height="20" rx="4" fill="#9b59b6"/><rect x="8" y="-28" width="20" height="20" rx="4" fill="#6c3483"/><rect x="-28" y="-2" width="20" height="20" rx="4" fill="#9b59b6"/><rect x="-2" y="-2" width="20" height="20" rx="4" fill="#6c3483"/><rect x="8" y="-2" width="20" height="20" rx="4" fill="#9b59b6"/><rect x="-28" y="24" width="48" height="6" rx="2" fill="#6c3483" opacity="0.5"/>
+  </g>
+  <text x="200" y="276" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="white" opacity="0.75" font-weight="500">MacroDeck Mini</text>
+</svg>

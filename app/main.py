@@ -13,7 +13,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app import ingest, scheduler
 from app.config import settings
-from app.db import pool
+from app.db import pool, sync_db_schema
 from app.partitions import create_partitions_ahead
 from app.routers import demo, siem
 
@@ -27,8 +27,9 @@ async def lifespan(_app: FastAPI):
     pool.wait()
     try:
         create_partitions_ahead()
+        sync_db_schema()
     except Exception:
-        log.exception("initial partition creation failed")
+        log.exception("initial partition creation / db sync failed")
     ingest.demo_source_id()  # warm cache
     scheduler.start()
     log.info("SIEM Log Engine started")

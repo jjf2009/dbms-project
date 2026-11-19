@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#27ae60;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#145a32;stop-opacity:0.6"/>
+    </linearGradient>
+    <filter id="sh"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.18"/></filter>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)" rx="16"/>
+  <g transform="translate(200,140)" filter="url(#sh)">
+    <rect x="-65" y="-22" width="130" height="44" rx="10" fill="white" opacity="0.9"/><rect x="-57" y="-14" width="12" height="10" rx="2" fill="#27ae60" opacity="0.7"/><rect x="-40" y="-14" width="12" height="10" rx="2" fill="#145a32" opacity="0.6"/><rect x="-23" y="-14" width="12" height="10" rx="2" fill="#27ae60" opacity="0.7"/><rect x="-6" y="-14" width="12" height="10" rx="2" fill="#145a32" opacity="0.6"/><rect x="11" y="-14" width="12" height="10" rx="2" fill="#27ae60" opacity="0.7"/><rect x="28" y="-14" width="12" height="10" rx="2" fill="#145a32" opacity="0.6"/><rect x="45" y="-14" width="12" height="10" rx="2" fill="#27ae60" opacity="0.7"/><rect x="-40" y="4" width="80" height="10" rx="2" fill="#27ae60" opacity="0.5"/>
+  </g>
+  <text x="200" y="276" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="white" opacity="0.75" font-weight="500">TypeFlow Wireless</text>
+</svg>

@@ -14,8 +14,14 @@ CREATE TABLE demo_users (
 
 -- Items the visitor can browse/search, so the site produces realistic traffic.
 CREATE TABLE items (
-    item_id     serial       PRIMARY KEY,
-    name        varchar(120) NOT NULL,
+    item_id     serial        PRIMARY KEY,
+    slug        varchar(80)   NOT NULL UNIQUE,
+    name        varchar(120)  NOT NULL,
+    category    varchar(80)   NOT NULL DEFAULT 'Accessories',
     description text,
-    price       numeric(10,2) NOT NULL DEFAULT 0
+    price       numeric(10,2) NOT NULL DEFAULT 0,
+    rating      varchar(10)   NOT NULL DEFAULT '4.8',
+    reviews     integer       NOT NULL DEFAULT 100,
+    image       text          NOT NULL DEFAULT '/static/products/hub.png',
+    badge       varchar(40)
 );

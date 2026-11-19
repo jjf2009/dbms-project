@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#161a30;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#31304d;stop-opacity:0.6"/>
+    </linearGradient>
+    <filter id="sh"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.18"/></filter>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)" rx="16"/>
+  <g transform="translate(200,140)" filter="url(#sh)">
+    <circle cx="0" cy="-5" r="38" fill="white" opacity="0.9"/><circle cx="0" cy="-5" r="28" fill="#161a30"/><circle cx="0" cy="-5" r="18" fill="#31304d"/><circle cx="0" cy="-5" r="10" fill="white" opacity="0.8"/><rect x="-6" y="33" width="12" height="18" rx="3" fill="#31304d" opacity="0.7"/><rect x="-20" y="51" width="40" height="6" rx="3" fill="white" opacity="0.4"/>
+  </g>
+  <text x="200" y="276" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="white" opacity="0.75" font-weight="500">ClearView 1080p Webcam</text>
+</svg>
